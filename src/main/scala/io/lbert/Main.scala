@@ -4,7 +4,7 @@ import io.lbert.client.HTTPClient
 import io.lbert.config.AppConfig
 import io.lbert.file.FileZIO
 import io.lbert.log.Logger
-import io.lbert.metrics.{Metrics, MetricsClient}
+import io.lbert.metrics.Metrics
 import io.lbert.server.{Health, Http4sServer}
 import org.http4s.HttpRoutes
 import org.http4s.server.Router
@@ -23,13 +23,10 @@ object Main extends App {
     clock         <- ZManaged.environment[Clock].map(_.get)
     logger        <- Logger.ofName("service")
     access        <- Logger.ofName("access")
-    metricsLogger <- Logger.ofName("metrics")
     file          <- FileZIO.live
     httpClient    <- HTTPClient.live
-    metricsClient <- MetricsClient.live(config.metrics, logger, clock)
-    metrics       <- Metrics.live(metricsClient, clock)
-    metricsL      <- Metrics.logger(metricsLogger, clock)
-    httpRoutes     = Http4sServer.metricsMiddleware(Http4sServer.accessLogsMiddleware(routes, access), metricsL)
+    metrics       <- Metrics.statsD(config.metrics, logger, clock)
+    httpRoutes     = Http4sServer.metricsMiddleware(Http4sServer.accessLogsMiddleware(routes, access), metrics)
     _             <- Http4sServer.run(config.server, httpRoutes, logger)
   } yield ()
 

@@ -1,5 +1,6 @@
 package io.lbert.metrics
 
+import io.lbert.config.MetricsConfig
 import io.lbert.log.Logger
 import io.lbert.metrics.Metrics.Names
 import zio.clock.Clock
@@ -27,7 +28,15 @@ object Metrics {
       Names((names.names ++ self.names):_*).formattedName
   }
 
-  def live(
+  def statsD(
+    config: MetricsConfig,
+    logger: Logger,
+    clock: Clock.Service
+  ): UManaged[Metrics] =
+    MetricsClient.live(config, logger, clock)
+      .flatMap(fromClient(_, clock))
+
+  def fromClient(
     metricsClient: MetricsClient,
     clock: Clock.Service
   ): UManaged[Metrics] = ZManaged.fromEffect(UIO(new Metrics {
