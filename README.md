@@ -10,7 +10,7 @@ old-fashioned way by using function arguments. The layers way has gotten messy f
 
 Also instead of using typed errors for each service, I'm just using an `Error` co-product and having 
 all the errors in one spot. Having typed errors is nice and all, but I have noticed that it
-creates lots of boiler-plate when you need to make between errors. I also don't like just using 
+creates lots of boiler-plate when you need to map between errors. I also don't like just using 
 `Exception` since I like being able to pattern match on my errors sometimes in controller error handling.
 
 ### Commands
