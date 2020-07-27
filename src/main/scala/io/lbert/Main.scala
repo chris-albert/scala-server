@@ -26,7 +26,10 @@ object Main extends App {
     file          <- FileZIO.live
     httpClient    <- HTTPClient.live
     metrics       <- Metrics.statsD(config.metrics, logger, clock)
-    httpRoutes     = Http4sServer.metricsMiddleware(Http4sServer.accessLogsMiddleware(routes, access), metrics)
+    httpRoutes    = Http4sServer.compose(routes)(
+      Http4sServer.accessLogsMiddleware(_, access),
+      Http4sServer.metricsMiddleware(_, metrics)
+    )
     _             <- Http4sServer.run(config.server, httpRoutes, logger)
   } yield ()
 

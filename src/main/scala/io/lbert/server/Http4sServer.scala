@@ -6,7 +6,7 @@ import io.lbert.config.ServerConfig
 import io.lbert.log.Logger
 import io.lbert.metrics.Metrics
 import io.lbert.metrics.Metrics.Names
-import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes, Request, Response, Status}
+import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes, Request, Response}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.blaze.BlazeServerBuilder
 import zio.{Task, ZIO, ZManaged}
@@ -36,6 +36,9 @@ object Http4sServer {
         )
       )
     )
+
+  def compose(initial: HttpRoutes[Task])(routes: HttpRoutes[Task] => HttpRoutes[Task]*): HttpRoutes[Task] =
+    routes.foldLeft(initial)((a, b) => b(a))
 
   def accessLogsMiddleware(
     service: HttpRoutes[Task],
