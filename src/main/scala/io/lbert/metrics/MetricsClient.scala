@@ -1,7 +1,7 @@
 package io.lbert.metrics
 
-import io.lbert.Logger
 import io.lbert.config.MetricsConfig
+import io.lbert.log.Logger
 import io.lbert.metrics.Metrics.Names
 import zio.clock.Clock
 import zio.{Queue, UIO, UManaged, ZLayer, ZManaged}

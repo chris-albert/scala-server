@@ -3,6 +3,7 @@ package io.lbert
 import io.lbert.client.HTTPClient
 import io.lbert.config.AppConfig
 import io.lbert.file.FileZIO
+import io.lbert.log.Logger
 import io.lbert.metrics.{Metrics, MetricsClient}
 import io.lbert.server.{Health, Http4sServer}
 import org.http4s.HttpRoutes

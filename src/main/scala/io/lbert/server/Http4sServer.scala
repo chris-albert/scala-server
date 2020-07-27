@@ -2,8 +2,8 @@ package io.lbert.server
 
 import cats.data.{Kleisli, OptionT}
 import io.circe.{Decoder, Encoder, Json}
-import io.lbert.Logger
 import io.lbert.config.ServerConfig
+import io.lbert.log.Logger
 import io.lbert.metrics.Metrics
 import io.lbert.metrics.Metrics.Names
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes, Request, Response, Status}

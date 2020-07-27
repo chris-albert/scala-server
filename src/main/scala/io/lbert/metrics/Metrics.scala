@@ -1,6 +1,6 @@
 package io.lbert.metrics
 
-import io.lbert.Logger
+import io.lbert.log.Logger
 import io.lbert.metrics.Metrics.Names
 import zio.clock.Clock
 import zio.duration.Duration

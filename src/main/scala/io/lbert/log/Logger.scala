@@ -1,8 +1,8 @@
-package io.lbert
+package io.lbert.log
 
 import io.circe.{Json, Printer}
-import zio.{UIO, UManaged, ZManaged}
 import org.slf4j.{LoggerFactory, Logger => Slf4jLogger}
+import zio.{UIO, UManaged, ZManaged}
 
 trait Logger {
   def trace(msg: String): UIO[Unit]
