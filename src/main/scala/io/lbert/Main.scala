@@ -19,18 +19,18 @@ object Main extends App {
   )
 
   val app = for {
-    config        <- AppConfig.live
-    clock         <- ZManaged.environment[Clock].map(_.get)
-    logger        <- Logger.ofName("service")
-    access        <- Logger.ofName("access")
-    file          <- FileZIO.live
-    httpClient    <- HTTPClient.live
-    metrics       <- Metrics.statsD(config.metrics, logger, clock)
-    httpRoutes    = Http4sServer.compose(routes)(
+    config     <- AppConfig.live
+    clock      <- ZManaged.environment[Clock].map(_.get)
+    logger     <- Logger.ofName("service")
+    access     <- Logger.ofName("access")
+    file       <- FileZIO.live
+    httpClient <- HTTPClient.live
+    metrics    <- Metrics.statsD(config.metrics, logger, clock)
+    httpRoutes  = Http4sServer.compose(routes)(
       Http4sServer.accessLogsMiddleware(_, access),
       Http4sServer.metricsMiddleware(_, metrics)
     )
-    _             <- Http4sServer.run(config.server, httpRoutes, logger)
+    _          <- Http4sServer.run(config.server, httpRoutes, logger)
   } yield ()
 
   def run(args: List[String]): URIO[ZEnv, ExitCode] =
