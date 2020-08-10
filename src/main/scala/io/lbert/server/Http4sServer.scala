@@ -18,8 +18,8 @@ object Http4sServer {
 
   def run(
     serverConfig: ServerConfig,
-    routes: HttpRoutes[Task],
-    logger: Logger
+    routes      : HttpRoutes[Task],
+    logger      : Logger
   ): ZManaged[zio.ZEnv, Throwable, Unit] =
     ZManaged.fromEffect(
       logger.info(s"Starting server on port [${serverConfig.port.port}] bound to address [${serverConfig.bind.bind}]").flatMap(_ =>
@@ -42,23 +42,25 @@ object Http4sServer {
 
   def accessLogsMiddleware(
     service: HttpRoutes[Task],
-    logger: Logger
+    logger : Logger
   ): HttpRoutes[Task] =
     Kleisli[OptionT[Task, *], Request[Task], Response[Task]] { (req: Request[Task]) =>
       service(req).flatMap { resp =>
         OptionT.liftF[Task, Response[Task]](
-          logger.info(accessLogJson(req, resp)).as(resp)
+          logger.info(accessLogJson(req, resp.status.code)).as(resp)
         )
-      }
+      }.orElseF(
+        logger.info(accessLogJson(req, 404)).as(None)
+      )
     }
 
   def accessLogJson[F[_]](
-    req: Request[F],
-    res: Response[F]
+    req       : Request[F],
+    statusCode: Int
   ): Json = Json.obj(
     "method" -> Json.fromString(req.method.name),
     "uri"    -> Json.fromString(req.uri.renderString),
-    "status" -> Json.fromInt(res.status.code)
+    "status" -> Json.fromInt(statusCode)
   )
 
   def metricsMiddleware(

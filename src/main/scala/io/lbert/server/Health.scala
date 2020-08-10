@@ -11,6 +11,6 @@ object Health {
 
   val routes: HttpRoutes[Task] = HttpRoutes.of[Task] {
     case GET -> Root / "health" =>
-      Ok("ok")
+      Ok("OK")
   }
 }
